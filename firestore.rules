@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidUserProfile(data) {
+      return data.email is string &&
+             data.email.size() > 0 &&
+             data.email.size() <= 200 &&
+             (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 100)) &&
+             (!('createdAt' in data) || (data.createdAt is timestamp && data.createdAt <= request.time));
+    }
+
+    function isValidFarmData(data, userId) {
+      return data.userId == userId &&
+             data.recordsJson is string &&
+             data.recordsJson.size() > 0 &&
+             data.recordsJson.size() <= 1048576 &&
+             (!('updatedAt' in data) || (data.updatedAt is timestamp && data.updatedAt <= request.time));
+    }
+
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create, update: if isOwner(userId) && isValidUserProfile(request.resource.data);
+      allow delete: if isOwner(userId);
+    }
+
+    match /farms/{userId} {
+      allow get: if isOwner(userId);
+      allow create, update: if isOwner(userId) && isValidFarmData(request.resource.data, userId);
+      allow delete: if isOwner(userId);
+    }
+  }
+}

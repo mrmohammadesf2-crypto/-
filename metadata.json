@@ -1,0 +1,6 @@
+{
+  "name": "مدیریت",
+  "description": "برنامه مدیریت فارم و گوساله‌ها",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

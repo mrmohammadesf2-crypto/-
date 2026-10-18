@@ -1,0 +1,56 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "User email address"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User display name"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Account creation timestamp"
+        }
+      },
+      "required": ["email"]
+    },
+    "FarmData": {
+      "title": "FarmData",
+      "description": "Farm management records for a user",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "ID of the farm owner"
+        },
+        "recordsJson": {
+          "type": "string",
+          "description": "Serialized JSON of all farm records"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when farm records were last updated"
+        }
+      },
+      "required": ["userId", "recordsJson"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Stores user profile metadata"
+    },
+    "/farms/{userId}": {
+      "schema": "FarmData",
+      "description": "Stores user farm records"
+    }
+  }
+}
